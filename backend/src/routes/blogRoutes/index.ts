@@ -13,10 +13,16 @@ const app = new Hono<{
 }>();
 
 app.get("/get/all",async(c) => {
-   const prisma = c.get('prisma');
-   const posts:any[]= await prisma.post.findMany();
-   c.status(200);
-   return c.json({success:true,data:posts})
+  try{
+    const prisma = c.get('prisma');
+    const posts:any[]= await prisma.post.findMany();
+    c.status(200);
+    return c.json({success:true,data:posts})
+  }catch(e){
+    c.status(500);
+    console.log(e);
+    return c.json({sucess:false,message:e});
+  }
 });
 app.get("/:id", async(c) => {
   const id= c.req.param('id');
@@ -36,7 +42,7 @@ app.get("/:id", async(c) => {
     return c.json({success:true,data:blog});
   }catch(error){
     c.status(500);
-    c.json({success:false,error:error});
+    return c.json({success:false,error:error});
   }
 });
 

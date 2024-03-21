@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { sign } from "hono/jwt";
-import {signinInputSchema,signupInputSchema} from '@shreshthcodes/blog_common/dist'
+import { signinInputSchema,signupInputSchema} from "@shreshthcodes/blog_common/dist";
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -18,10 +18,10 @@ app.get("/users", async (c) => {
 // SIGNUP ROUTE
 app.post("/signup", async (c) => {
   const body = await c.req.json();
-  const {success} = signupInputSchema.safeParse(body);
-  if(!success){
+  const { success } = signupInputSchema.safeParse(body);
+  if (!success) {
     c.status(400);
-    return c.json({success:false,message:"Input format incorrect"})
+    return c.json({ success: false, message: "Input format incorrect" });
   }
   //   const prisma = new PrismaClient({
   //     datasourceUrl: c.env.DATABASE_URL,
@@ -55,6 +55,7 @@ app.post("/signup", async (c) => {
         c.env.JWT_SECRET
       );
       c.status(200);
+      c.header("X-Authorization", `Bearer ${token}`);
       return c.json({
         success: true,
         data: {
@@ -72,10 +73,10 @@ app.post("/signup", async (c) => {
 //SIGNIN ROUTE
 app.post("/signin", async (c) => {
   const body = await c.req.json();
-  const {success} = signinInputSchema.safeParse(body);
-  if(!success){
+  const { success } = signinInputSchema.safeParse(body);
+  if (!success) {
     c.status(400);
-    return c.json({success:false,message:"Input format incorrect"})
+    return c.json({ success: false, message: "Input format incorrect" });
   }
   try {
     const prisma = c.get("prisma");
@@ -100,7 +101,7 @@ app.post("/signin", async (c) => {
           c.env.JWT_SECRET
         );
         c.status(200);
-        c.header('X-Authorization',`Bearer ${token}`)
+        c.header("X-Authorization", `Bearer ${token}`);
         return c.json({
           success: true,
           data: {
