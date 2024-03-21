@@ -3,7 +3,7 @@ import {PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import userRoutes from "./routes/userRoutes";
 import blogRoutes from "./routes/blogRoutes";
-
+import { cors } from "hono/cors";
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -18,6 +18,7 @@ const app = new Hono<{
   This is a workaround to access the prisma client in the route handlers. 
   This is a workaround to access the prisma client in the route handlers. 
   This is a workaround to access the prisma client in the route handlers.*/
+  app.use('*', cors())
 app.use("*", async (c, next) => {
   const prisma: any = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
